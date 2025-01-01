@@ -10,7 +10,7 @@ import {
   UploadIcon,
 } from "@/components/icons";
 import { useWindowSize, useOnClickOutside } from "@/hooks";
-import { Dispatch, SetStateAction, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState, RefObject } from "react";
 import { fetcher } from "@/utils/fetcher";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -39,13 +39,14 @@ export const Files = ({
     fallbackData: [],
   });
 
+  console.log({ files });
   const { width } = useWindowSize();
   const isDesktop = width > 768;
 
   const drawerRef = useRef<HTMLDivElement>(null);
-  // useOnClickOutside([drawerRef], () => {
-  //   setIsFilesVisible(false);
-  // });
+  useOnClickOutside([drawerRef as RefObject<HTMLElement>], () => {
+    setIsFilesVisible(false);
+  });
 
   return (
     <motion.div

@@ -22,7 +22,7 @@ export const useWindowSize = () => {
 };
 
 export const useOnClickOutside = (
-  refs: RefObject<HTMLElement>[],
+  refs: Array<RefObject<HTMLElement | HTMLDivElement>>,
   handler: () => void
 ) => {
   useEffect(() => {

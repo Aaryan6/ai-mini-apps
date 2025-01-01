@@ -66,8 +66,9 @@ export function Chat({
   const { messages, handleSubmit, input, setInput, append } = useChat({
     body: { id, selectedFilePathnames },
     initialMessages,
+    api: "/api/pdf-chat",
     onFinish: () => {
-      window.history.replaceState({}, "", `/${id}`);
+      // window.history.replaceState({}, "", `/${id}`);
     },
   });
 
@@ -75,11 +76,11 @@ export function Chat({
     useScrollToBottom<HTMLDivElement>();
 
   return (
-    <div className="flex flex-row justify-center pb-20 h-dvh bg-white dark:bg-zinc-900">
-      <div className="flex flex-col justify-between items-center gap-4">
+    <div className="flex flex-row justify-center h-full pb-20 bg-white dark:bg-zinc-900">
+      <div className="flex flex-col justify-between items-center gap-4 w-full">
         <div
           ref={messagesContainerRef}
-          className="flex flex-col gap-4 h-full w-dvw items-center overflow-y-scroll"
+          className="flex flex-col gap-4 h-full w-full items-center overflow-y-scroll"
         >
           {messages.map((message, index) => (
             <PreviewMessage

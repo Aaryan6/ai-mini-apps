@@ -1,7 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 
-const aiApps = [{ id: 1, name: "Simple Chatbot", url: "/chat" }];
+const aiApps = [
+  { id: 1, name: "Simple Chatbot", url: "/chat" },
+  { id: 2, name: "PDF Chat", url: "/pdf-chat" },
+];
 
 export default function Home() {
   return (

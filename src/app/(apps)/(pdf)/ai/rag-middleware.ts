@@ -38,7 +38,6 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
       if (recentMessage) {
         messages.push(recentMessage);
       }
-
       return params;
     }
 
@@ -82,6 +81,8 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
       filePaths: selection.map((path) => `${session.user?.email}/${path}`),
     });
 
+    // console.log({ chunksBySelection });
+
     const chunksWithSimilarity = chunksBySelection.map((chunk) => ({
       ...chunk,
       similarity: cosineSimilarity(
@@ -89,7 +90,6 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
         chunk.embedding
       ),
     }));
-
     // rank the chunks by similarity and take the top K
     chunksWithSimilarity.sort((a, b) => b.similarity - a.similarity);
     const k = 10;

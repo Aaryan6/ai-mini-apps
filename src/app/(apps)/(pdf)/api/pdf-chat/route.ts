@@ -12,7 +12,7 @@ export async function POST(request: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const result = await streamText({
+  const result = streamText({
     model: customModel,
     system:
       "you are a friendly assistant! keep your responses concise and helpful.",
