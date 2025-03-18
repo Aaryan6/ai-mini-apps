@@ -4,14 +4,29 @@ import { list } from "@vercel/blob";
 export async function GET() {
   let session = await auth();
 
+  const guestEmail = process.env.GUEST_EMAIL;
   if (!session) {
-    return Response.redirect("/login");
+    const { blobs } = await list({ prefix: guestEmail });
+
+    return Response.json(
+      blobs.map((blob) => ({
+        ...blob,
+        pathname: blob.pathname.replace(`${guestEmail}/`, ""),
+      }))
+    );
   }
 
   const { user } = session;
 
   if (!user) {
-    return Response.redirect("/login");
+    const { blobs } = await list({ prefix: guestEmail });
+
+    return Response.json(
+      blobs.map((blob) => ({
+        ...blob,
+        pathname: blob.pathname.replace(`${guestEmail}/`, ""),
+      }))
+    );
   }
 
   const { blobs } = await list({ prefix: user.email! });

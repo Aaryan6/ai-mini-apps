@@ -20,8 +20,7 @@ const selectionSchema = z.object({
 export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
   transformParams: async ({ params }) => {
     const session = await auth();
-
-    if (!session) return params; // no user session
+    const guestEmail = process.env.GUEST_EMAIL;
 
     const { prompt: messages, providerMetadata } = params;
 
@@ -78,7 +77,9 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
 
     // find relevant chunks based on the selection
     const chunksBySelection = await getChunksByFilePaths({
-      filePaths: selection.map((path) => `${session.user?.email}/${path}`),
+      filePaths: selection.map(
+        (path) => `${session ? session.user?.email : guestEmail}/${path}`
+      ),
     });
 
     // console.log({ chunksBySelection });

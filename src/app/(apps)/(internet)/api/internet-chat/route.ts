@@ -1,15 +1,17 @@
-import { createOpenAI } from "@ai-sdk/openai";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { smoothStream, streamText } from "ai";
 
-const openai = createOpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+const google = createGoogleGenerativeAI({
+  apiKey: process.env.GOOGLE_API_KEY,
 });
 
 export async function POST(request: Request) {
   const { messages } = await request.json();
 
   const result = streamText({
-    model: openai("gpt-4o-mini"),
+    model: google("gemini-2.0-flash-exp", {
+      useSearchGrounding: true,
+    }),
     messages: messages,
     experimental_transform: smoothStream({
       delayInMs: 20, // optional: defaults to 10ms

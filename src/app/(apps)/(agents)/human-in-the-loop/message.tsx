@@ -10,12 +10,23 @@ const getTextFromDataUrl = (dataUrl: string) => {
   return window.atob(base64);
 };
 
-export const MessageUI = ({ message }: { message: Message }) => {
+export const MessageUI = ({
+  message,
+  onToolResult,
+  toolsRequiringConfirmation = [],
+}: {
+  message: Message;
+  onToolResult?: (toolCallId: string, result: string) => void;
+  toolsRequiringConfirmation?: string[];
+}) => {
   return (
     <motion.div
       className={`flex whitespace-pre-wrap flex-row gap-4 px-4 w-full md:w-[500px] md:px-0 first-of-type:pt-20`}
       initial={{ y: 5, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.2 }}
+      key={message.id}
+      layout="position"
     >
       <div className="size-[24px] flex flex-col justify-center items-center flex-shrink-0 text-zinc-400">
         {message.role === "assistant" ? <BotIcon /> : <UserIcon />}
@@ -55,6 +66,57 @@ export const MessageUI = ({ message }: { message: Message }) => {
               toolInvocation.state === "call" &&
               onToolResult
             ) {
+              if (toolInvocation.toolName === "scheduleMeeting") {
+                const { title, date, duration, participants } =
+                  toolInvocation.args;
+                return (
+                  <div
+                    key={toolCallId}
+                    className="text-zinc-500 dark:text-zinc-400"
+                  >
+                    <div className="mb-2">Confirm meeting details:</div>
+                    <div className="space-y-1 mb-3">
+                      <div>
+                        Title:{" "}
+                        <span className={dynamicInfoStyles}>{title}</span>
+                      </div>
+                      <div>
+                        Date:{" "}
+                        <span className={dynamicInfoStyles}>
+                          {new Date(date).toLocaleString()}
+                        </span>
+                      </div>
+                      <div>
+                        Duration:{" "}
+                        <span className={dynamicInfoStyles}>
+                          {duration} minutes
+                        </span>
+                      </div>
+                      <div>
+                        Participants:{" "}
+                        <span className={dynamicInfoStyles}>
+                          {participants.join(", ")}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 pt-2">
+                      <button
+                        className="px-3 py-1 font-medium text-sm text-zinc-800 bg-zinc-200 rounded-md hover:bg-zinc-400"
+                        onClick={() => onToolResult(toolCallId, "YES")}
+                      >
+                        Confirm
+                      </button>
+                      <button
+                        className="px-3 py-1 font-medium text-sm text-zinc-100 bg-zinc-700 rounded-md hover:bg-zinc-800"
+                        onClick={() => onToolResult(toolCallId, "NO")}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                );
+              }
+
               return (
                 <div
                   key={toolCallId}
@@ -70,13 +132,13 @@ export const MessageUI = ({ message }: { message: Message }) => {
                   </span>
                   <div className="flex gap-2 pt-2">
                     <button
-                      className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+                      className="px-3 py-1 font-medium text-sm text-zinc-800 bg-zinc-200 rounded-md hover:bg-zinc-400"
                       onClick={() => onToolResult(toolCallId, "YES")}
                     >
                       Yes
                     </button>
                     <button
-                      className="px-4 py-2 font-bold text-white bg-red-500 rounded hover:bg-red-700"
+                      className="px-3 py-1 font-medium text-sm text-zinc-100 bg-zinc-700 rounded-md hover:bg-zinc-800"
                       onClick={() => onToolResult(toolCallId, "NO")}
                     >
                       No
